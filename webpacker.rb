@@ -11,8 +11,8 @@ run 'mkdir -p app/javascript/images'
 gsub_file "app/javascript/packs/application.js", "// const images", "const images"
 gsub_file "app/javascript/packs/application.js", "// const imagePath", "const imagePath"
 
-copy_file 'webpacker/template/loaders/jquery.js', 'config/webpack/loaders/jquery.js'
-copy_file 'webpacker/template/loaders/ujs.js', 'config/webpack/loaders/ujs.js'
+copy_file 'webpacker/loaders/jquery.js', 'config/webpack/loaders/jquery.js'
+copy_file 'webpacker/loaders/ujs.js', 'config/webpack/loaders/ujs.js'
 
 inject_into_file 'config/webpack/environment.js', after: "const { environment } = require('@rails/webpacker')\n" do
 <<-CODE
@@ -20,5 +20,3 @@ environment.loaders.append('jquery', require('./loaders/jquery'))
 environment.loaders.append('ujs', require('./loaders/ujs'))
 CODE
 end
-
-copy_file '.yarnrc'

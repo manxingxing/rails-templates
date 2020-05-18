@@ -16,18 +16,20 @@ end
 
 gem_group :development do
   gem 'annotate'
-  gem 'foreman'
 end
 
 # 初始化 .env 文件
-copy_file 'template/.env.example', '.env.example'
-copy_file 'template/.env.example', '.env'
-copy_file 'template/Procfile', 'Procfile'
+copy_file '.env.example', '.env.example'
+copy_file '.env.example', '.env'
+copy_file 'Procfile', 'Procfile'
+
+copy_file '.yarnrc'
 
 application do <<-RUBY
   config.generators do |g|
     g.assets false
     g.helper false
+    g.test_framework :test_unit, fixture: false
   end
   RUBY
 end
