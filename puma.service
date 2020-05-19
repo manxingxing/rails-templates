@@ -1,0 +1,15 @@
+[Unit]
+Description=Puma Rails Server
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=<YOUR_APP_PATH>
+ExecStart=/home/deploy/.rbenv/bin/rbenv exec bundle exec puma -C <YOUR_APP_PATH>/config/puma-production.rb
+ExecStop=/home/deploy/.rbenv/bin/rbenv exec bundle exec pumactl -S <YOUR_APP_PATH>/tmp/pids/puma.state stop
+TimeoutSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
