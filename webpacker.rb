@@ -18,5 +18,13 @@ inject_into_file 'config/webpack/environment.js', after: "const { environment } 
 <<-CODE
 environment.loaders.append('jquery', require('./loaders/jquery'))
 environment.loaders.append('ujs', require('./loaders/ujs'))
+
+environment.plugins.prepend(
+  'Provide',
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery'
+  })
+);
 CODE
 end
