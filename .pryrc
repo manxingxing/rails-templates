@@ -1,4 +1,28 @@
 module ActiveRecordInspection
+  def t_fields
+    i1n8_translations = I18n.t("#{i18n_scope}.attributes.#{model_name.i18n_key}", default: {})
+    ActiveRecord::Base.connection.columns(table_name).each do |c|
+      str = "- #{c.name}: "
+
+      if defined_enums.key?(c.name)
+        labels = defined_enums[c.name].keys
+        str << "enum(#{labels.join(', ')})"
+      else
+        str << c.type.to_s
+      end
+
+      str << ", default: #{c.default}" if c.default
+      if i1n8_translations.key?(c.name.to_sym)
+        tr = i1n8_translations[c.name.to_sym]
+        str << ", comment: #{tr}"
+      elsif c.comment
+        str << ", comment: #{c.comment}" if c.comment
+      end
+      puts str
+    end
+    nil
+  end
+
   def t_associations
     reflections.map do |name, reflection|
       "#{reflection.macro} :#{reflection.name}, #{reflection.options}"
@@ -108,3 +132,42 @@ module ClassExtensions
 end
 
 Class.send(:include, ClassExtensions)
+
+def detail(kls)
+  if kls < ActiveRecord::Base
+    kls.t_fields
+
+    ap '====== enums ======'
+    kls.t_enums
+
+    ap '====== attributes ======'
+    kls.t_attributes
+
+    ap "===== Associatons ======"
+    kls.t_associations
+
+    ap '===== stored attributes ====='
+    kls.t_stored_attributes
+
+    ap "======== Features ========="
+    column_names = kls.column_names
+    if column_names.include?('type')
+      puts "!! 单表继承"
+    end
+
+    column_names.each do |field|
+      if result = field.match(/([\w_]+)_type/)
+        sub_fieldname = result.captures[0]
+        if column_names.include?("#{sub_fieldname}_id")
+          puts "!! 多态关联: #{sub_fieldname}"
+        end
+      end
+    end
+
+    ap '====== Callbacks ========='
+    kls.t_callbacks
+
+    ap '====== Validators ========='
+    kls.t_validators
+  end
+end
