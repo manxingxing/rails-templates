@@ -1,0 +1,6 @@
+Time::DATE_FORMATS[:ios8601] = '%F'
+Time::DATE_FORMATS[:date] = '%F'
+Time::DATE_FORMATS[:date_cn] = '%Y年%-m月%-d日'
+Time::DATE_FORMATS[:datetime] = '%F %T'
+Time::DATE_FORMATS[:datetime_cn] = '%Y年%-m月%-d日 %T'
+Time::DATE_FORMATS[:time] = '%T'
